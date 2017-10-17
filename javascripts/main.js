@@ -20,4 +20,5 @@ let singleMovie = {
 		vote_count:7965
 	};
 
+//dom.domstring  because of object and not json.
 	dom.domString([singleMovie, singleMovie, singleMovie, singleMovie]);
