@@ -9,7 +9,7 @@ const domString = (movieArray) => {
 		}
 		domString += `<div class="col-sm-6 col-md-4">`;
 		domString += `<div class="thumbnail">`;
-		domString += `<img src="..." alt="...">`;
+		domString += `<img src="" alt="...">`;
 		domString += `<div class="caption">`;
 		domString += `<h3>${movieArray[i].original_title}</h3>`;
 		domString += `<p>${movieArray[i].overview}</p>`;
@@ -18,7 +18,7 @@ const domString = (movieArray) => {
 		domString +=  `</div>`;
 		domString +=  `</div>`;
 		domString +=  `</div>`;
-		if (i % 3 === 2 || i === movieArray.lenth -1){
+		if (i % 3 === 2 || i === movieArray.length -1){
 		domString +=  `</div>`;
 		}
 
@@ -33,4 +33,9 @@ const printDomString = (strang) => {
   $("#movies").append(strang);
 };
 
-module.exports ={domString};
+const clearDom = () => {
+	$("#movies").html("");
+	//or $("#movies").empty()
+};
+
+module.exports ={domString, clearDom};
