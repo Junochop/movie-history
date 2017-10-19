@@ -29,7 +29,9 @@ module.exports = {retrieveKeys};
 },{"./tmdb":5}],2:[function(require,module,exports){
 "use strict";
 
-const domString = (movieArray) => {
+
+const domString = (movieArray, imgConfig) => {
+
 	console.log(movieArray);
 	let domString = "";
 	for (let i=0; i < movieArray.length; i++) {
@@ -38,7 +40,9 @@ const domString = (movieArray) => {
 		}
 		domString += `<div class="col-sm-6 col-md-4">`;
 		domString += `<div class="thumbnail">`;
-		domString += `<img src="" alt="...">`;
+
+		domString += `<img src="${imgConfig.base_url}/w342/${movieArray[i].poster_path}" alt="">`;
+
 		domString += `<div class="caption">`;
 		domString += `<h3>${movieArray[i].original_title}</h3>`;
 		domString += `<p>${movieArray[i].overview}</p>`;
@@ -87,6 +91,7 @@ const pressEnter = () => {
 
 module.exports = {pressEnter};
 },{"./tmdb":5}],4:[function(require,module,exports){
+
 "use strict";
 
 let events = require('./events');
@@ -128,6 +133,50 @@ events.pressEnter();
 "use strict";
 
 let tmdbKey;
+
+"use strict";
+
+let events = require('./events');
+let apiKeys = require('./apiKeys');
+
+
+apiKeys.retrieveKeys();
+events.pressEnter();
+
+
+
+
+
+
+// let dom = require('./dom');
+
+
+// let singleMovie = {
+// 		adult:false,
+// 		backdrop_path:"/c2Ax8Rox5g6CneChwy1gmu4UbSb.jpg",
+// 		genre_ids:[28, 12, 878, 14],
+// 		id:140607,
+// 		original_language:"en",
+// 		original_title:"Star Wars: The Force Awakens",
+// 		overview:"Thirty years after defeating the Galactic Empire, Han Solo and his allies face a new threat from the evil Kylo Ren and his army of Stormtroopers.",
+// 		popularity:49.408373,
+// 		poster_path:"/weUSwMdQIa3NaXVzwUoIIcAi85d.jpg",
+// 		release_date:"2015-12-15",
+// 		title:"Star Wars: The Force Awakens",
+// 		video:false,
+// 		vote_average:7.5,
+// 		vote_count:7965
+// 	};
+
+// //dom.domstring  because of object and not json.
+// 	dom.domString([singleMovie, singleMovie, singleMovie, singleMovie]);
+
+},{"./apiKeys":1,"./events":3}],5:[function(require,module,exports){
+"use strict";
+
+let tmdbKey;
+let imgConfig;
+
 const dom = require('./dom');
 
 const searchTMDB = (query) => {
@@ -147,6 +196,27 @@ return new Promise((resolve, reject) => {
 
 };
 
+
+const tmdbConfiguration = () => {
+	return new Promise((resolve, reject)=> {
+		$.ajax(`https://api.themoviedb.org/3/configuration?api_key=${tmdbKey}`
+		).done((data) => {
+			resolve(data.images);
+		}).fail((error) => {
+			reject(error);
+		});
+
+	});
+};
+
+const getConfig = () => {
+	tmdbConfiguration().then((results) => {
+		imgConfig = results;
+	}).catch((error)=>{
+		console.log("error in config", error);
+	});
+};
+
 const searchMovies = (query) => {
 // execute search TMDB
 searchTMDB(query).then((data) =>{
@@ -161,13 +231,18 @@ const setKey = (apiKey) => {
 // sets tmdbkey
 tmdbKey = apiKey;
 
+getConfig();
+
+
 
 };
 
 
 const showResults = (movieArray) => {
 dom.clearDom();
- dom.domString(movieArray);
+
+ dom.domString(movieArray, imgConfig);
+
 };
 
 module.exports ={setKey, searchMovies};
