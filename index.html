@@ -22,19 +22,32 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">authentication <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">My movies</a></li>
-        <li><a href="#">Search</a></li>
+        <li><a id="authenticate">authentication <span class="sr-only">(current)</span></a></li>
+        <li><a id="mine">My movies</a></li>
+        <li><a id="navSearch">Search</a></li>
       </ul>
       
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<div class="input-group input-group-lg col-xs-6 col-xs-offset-3">
-  <span class="input-group-addon glyphicon glyphicon-search" title="magnifying glass" aria-hidden="true"></span>
-
-  <input type="text" id="searchBar" class="form-control" placeholder="search" aria-describedby="basic-addon1">
+<div class="text-center" id ="authScreen">	</div>
+	<h1>Sign In</h1>
+	<button class="btn btn-lg btn-default" id="googleButton">
+		<img src="./images/google.png">
+	</button>
 </div>
+ <div class="text-center hide" id="search">
+    <div class="input-group input-group-lg col-xs-6 col-xs-offset-3">
+      <span class="input-group-addon glyphicon glyphicon-search" aria-hidden="true"></span>
+      <input type="text" class="form-control" placeholder="Star Wars" id="searchBar">
+    </div>
+
+    <div id="movies" class="container"></div>
+  </div>
+  <div class="text-center hide" id="myMovies">
+    <h1>My Movies</h1>
+    <div id="moviesMine"></div>
+  </div>
 
 	<div id="movies"></div>
 	<script type="text/javascript" src="./lib/node_modules/jquery/dist/jquery.min.js"></script>
