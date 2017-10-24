@@ -43,6 +43,7 @@ const getConfig = () => {
 
 const searchMovies = (query) => {
 // execute search TMDB
+
 searchTMDB(query).then((data) =>{
 	showResults(data);
 }).catch((error)=> {
