@@ -6,12 +6,11 @@ const firebaseApi = require('./firebaseApi');
 
 const pressEnter = () => {
   $(document).keypress((e) => {
-  	if(e.key === 'Enter'){
+    if (e.key === 'Enter'){
       let searchText = $('#searchBar').val();
       let query = searchText.replace(/\s/g, "%20");
       tmdb.searchMovies(query);
     }
-
   });
 
 };
@@ -40,8 +39,6 @@ const myLinks = () => {
 	});
 };
 
-
-
 const googleAuth = () => {
 	$('#googleButton').click((e) =>{
 		firebaseApi.authenticateGoogle().then().catch((err) =>{
@@ -51,9 +48,48 @@ const googleAuth = () => {
 };
 
 
+const wishListEvents = () => {
+	$('body').on('click', '.wishlist', (e) => {
+		console.log("wishlist event", e);
+		let mommy = e.target.closest('.movie');
+
+		let newMovie = {
+			"title":$(mommy).find('.title').html(),
+			"overview": $(mommy).find('.overview').html(),
+			"poster_path":$(mommy).find('.poster_path').attr('src').split('/').pop(),
+			"rating": 0,
+			"isWatched": false,
+			"uid": ""
+		};
+		console.log("newMovie", newMovie);
+		 firebaseApi.saveMovie(newMovie).then(()=>{
+		 	$(mommy).remove();
+		 }).catch((err)=>{
+		 	console.log("error in save Movie", err);
+		 });
+
+	});
+};
 
 
 
 
 
-module.exports = {pressEnter, myLinks, googleAuth};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = {pressEnter, myLinks, googleAuth, wishListEvents};

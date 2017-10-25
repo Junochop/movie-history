@@ -38,13 +38,16 @@ const domString = (movieArray, imgConfig, divName) => {
     if (i % 3 === 0) {
       domString += `<div class="row">`;
     }
-    domString += `<div class="col-sm-6 col-md-4">`;
+    domString += `<div class="col-sm-6 col-md-4 movie">`;
     domString +=    `<div class="thumbnail">`;
-    domString +=      `<img src="${imgConfig.base_url}/w342/${movieArray[i].poster_path}" alt="">`;
+    domString +=      `<img class="poster_path" src="${imgConfig.base_url}/w342/${movieArray[i].poster_path}" alt="">`;
     domString +=      `<div class="caption">`;
-    domString +=        `<h3>${movieArray[i].title}</h3>`;
-    domString +=        `<p>${movieArray[i].overview}</p>`;
-    domString +=        `<p><a href="#" class="btn btn-primary" role="button">Review</a> <a href="#" class="btn btn-default" role="button">Watchlist</a></p>`;
+    domString +=        `<h3 class="title">${movieArray[i].title}</h3>`;
+    domString +=        `<p class="overview">${movieArray[i].overview}</p>`;
+    domString +=        `<p>`;
+    domString +=           `<a href="#" class="btn btn-primary" role="button">Review</a>`;
+    domString +=           `<a class="btn btn-default wishlist" role="button">Wishlist</a>`;
+    domString +=        `</p>`;
     domString +=        `</div>`;
     domString +=      `</div>`;
     domString +=    `</div>`;
@@ -74,12 +77,11 @@ const firebaseApi = require('./firebaseApi');
 
 const pressEnter = () => {
   $(document).keypress((e) => {
-  	if(e.key === 'Enter'){
+    if (e.key === 'Enter'){
       let searchText = $('#searchBar').val();
       let query = searchText.replace(/\s/g, "%20");
       tmdb.searchMovies(query);
     }
-
   });
 
 };
@@ -108,8 +110,6 @@ const myLinks = () => {
 	});
 };
 
-
-
 const googleAuth = () => {
 	$('#googleButton').click((e) =>{
 		firebaseApi.authenticateGoogle().then().catch((err) =>{
@@ -119,12 +119,51 @@ const googleAuth = () => {
 };
 
 
+const wishListEvents = () => {
+	$('body').on('click', '.wishlist', (e) => {
+		console.log("wishlist event", e);
+		let mommy = e.target.closest('.movie');
+
+		let newMovie = {
+			"title":$(mommy).find('.title').html(),
+			"overview": $(mommy).find('.overview').html(),
+			"poster_path":$(mommy).find('.poster_path').attr('src').split('/').pop(),
+			"rating": 0,
+			"isWatched": false,
+			"uid": ""
+		};
+		console.log("newMovie", newMovie);
+		 firebaseApi.saveMovie(newMovie).then(()=>{
+		 	$(mommy).remove();
+		 }).catch((err)=>{
+		 	console.log("error in save Movie", err);
+		 });
+
+	});
+};
 
 
 
 
 
-module.exports = {pressEnter, myLinks, googleAuth};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = {pressEnter, myLinks, googleAuth, wishListEvents};
 },{"./dom":2,"./firebaseApi":4,"./tmdb":6}],4:[function(require,module,exports){
 "use strict";
 
@@ -168,8 +207,22 @@ const setKey = (key) => {
   	});
   };
 
+const saveMovie =(movie) => {
+	movie.uid = userUid;
+	return new Promise((resolve, reject) =>{
+		$.ajax({
+			method:"POST",
+			url: `${firebaseKey.databaseURL}/movies.json`,
+			data: JSON.stringify(movie)
+	}).then((result)=>{
+			resolve(result);
+		}).catch((error)=> {
+			reject(error);
+		});
+	});
+};
 
-module.exports = {setKey, authenticateGoogle, getMovieList};
+module.exports = {setKey, authenticateGoogle, getMovieList, saveMovie};
 },{}],5:[function(require,module,exports){
 "use strict";
 
@@ -181,6 +234,7 @@ apiKeys.retrieveKeys();
 events.pressEnter();
 events.googleAuth();
 events.myLinks();
+events.wishListEvents();
 
 
 
