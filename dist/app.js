@@ -45,7 +45,7 @@ const domString = (movieArray, imgConfig, divName) => {
     domString +=        `<h3 class="title">${movieArray[i].title}</h3>`;
     domString +=        `<p class="overview">${movieArray[i].overview}</p>`;
     domString +=        `<p>`;
-    domString +=           `<a href="#" class="btn btn-primary" role="button">Review</a>`;
+    domString +=           `<a href="#" class="btn btn-primary review" role="button">Review</a>`;
     domString +=           `<a class="btn btn-default wishlist" role="button">Wishlist</a>`;
     domString +=        `</p>`;
     domString +=        `</div>`;
@@ -142,6 +142,40 @@ const wishListEvents = () => {
 	});
 };
 
+const reviewEvents = () => {
+	$('body').on('click', '.review', (e) => {
+		
+		let mommy = e.target.closest('.movie');
+
+		let newMovie = {
+			"title":$(mommy).find('.title').html(),
+			"overview": $(mommy).find('.overview').html(),
+			"poster_path":$(mommy).find('.poster_path').attr('src').split('/').pop(),
+			"rating": 0,
+			"isWatched": true,
+			"uid": ""
+		};
+		console.log("newMovie", newMovie);
+		 firebaseApi.saveMovie(newMovie).then(()=>{
+		 	$(mommy).remove();
+		 }).catch((err)=>{
+		 	console.log("error in save Movie", err);
+		 });
+
+	});
+};
+
+
+const init = () => {
+pressEnter();
+googleAuth();
+myLinks();
+wishListEvents();
+reviewEvents();
+
+
+
+};
 
 
 
@@ -162,8 +196,7 @@ const wishListEvents = () => {
 
 
 
-
-module.exports = {pressEnter, myLinks, googleAuth, wishListEvents};
+module.exports = {pressEnter, myLinks, googleAuth, wishListEvents, reviewEvents, init};
 },{"./dom":2,"./firebaseApi":4,"./tmdb":6}],4:[function(require,module,exports){
 "use strict";
 
@@ -231,10 +264,12 @@ let apiKeys = require('./apiKeys');
 
 
 apiKeys.retrieveKeys();
-events.pressEnter();
-events.googleAuth();
-events.myLinks();
-events.wishListEvents();
+// events.pressEnter();
+// events.googleAuth();
+// events.myLinks();
+// events.wishListEvents();
+// events.reviewEvents();
+events.init();
 
 
 

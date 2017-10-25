@@ -5,10 +5,12 @@ let apiKeys = require('./apiKeys');
 
 
 apiKeys.retrieveKeys();
-events.pressEnter();
-events.googleAuth();
-events.myLinks();
-events.wishListEvents();
+// events.pressEnter();
+// events.googleAuth();
+// events.myLinks();
+// events.wishListEvents();
+// events.reviewEvents();
+events.init();
 
 
 
