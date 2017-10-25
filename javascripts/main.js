@@ -8,6 +8,7 @@ apiKeys.retrieveKeys();
 events.pressEnter();
 events.googleAuth();
 events.myLinks();
+events.wishListEvents();
 
 
 
